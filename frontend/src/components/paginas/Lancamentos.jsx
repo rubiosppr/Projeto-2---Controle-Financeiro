@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { api } from '../../services/api.js';
 import { useCarregar } from '../../utils/useCarregar.js';
 import { dataBR, mesAtual, moeda } from '../../utils/formatar.js';
-import { Estado } from '../comuns/Estados.jsx';
+import { Estado, MensagemErro } from '../comuns/Estados.jsx';
 import Modal from '../comuns/Modal.jsx';
 import ModalConfirmar from '../comuns/ModalConfirmar.jsx';
 import Paginacao from '../comuns/Paginacao.jsx';
@@ -38,6 +38,13 @@ export default function Lancamentos() {
 
   const { itens = [], totais, paginacao } = lista.dados ?? {};
 
+  // Se a página atual ficou além do total (ex.: excluiu o último item da última página), volta para a última válida
+  useEffect(() => {
+    if (paginacao && filtros.pagina > paginacao.paginas) {
+      setFiltros((f) => ({ ...f, pagina: Math.max(1, paginacao.paginas) }));
+    }
+  }, [paginacao, filtros.pagina]);
+
   return (
     <section>
       <div className="barra">
@@ -45,6 +52,7 @@ export default function Lancamentos() {
         <button type="button" disabled={!refs.dados} onClick={() => setEditando({})}>Novo lançamento</button>
       </div>
       {erroAcao && <p className="erro-bloco" role="alert">{erroAcao}</p>}
+      {refs.erro && <MensagemErro mensagem={refs.erro} aoTentar={refs.recarregar} />}
 
       <div className="barra">
         <CampoForm id="f-inicio" rotulo="De"><input id="f-inicio" type="date" value={filtros.inicio} onChange={mudar('inicio')} /></CampoForm>
@@ -96,11 +104,11 @@ export default function Lancamentos() {
             ))}
           </tbody>
         </table>
-        {paginacao && (
-          <Paginacao pagina={paginacao.pagina} paginas={paginacao.paginas}
-            aoMudar={(p) => setFiltros({ ...filtros, pagina: p })} />
-        )}
       </Estado>
+      {paginacao && (
+        <Paginacao pagina={filtros.pagina} paginas={paginacao.paginas}
+          aoMudar={(p) => setFiltros({ ...filtros, pagina: p })} />
+      )}
 
       {editando && refs.dados && (
         <Modal titulo={editando.id ? 'Editar lançamento' : 'Novo lançamento'} aoFechar={() => setEditando(null)}>
