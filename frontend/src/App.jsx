@@ -25,7 +25,7 @@ export default function App() {
             <Route path="/lancamentos" element={<Lancamentos />} />
             <Route path="/relatorios" element={<Relatorios />} />
             <Route path="/faturas" element={<Faturas />} />
-<Route path="/saude-financeira" element={<SaudeFinanceira />} />
+            <Route path="/saude-financeira" element={<SaudeFinanceira />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

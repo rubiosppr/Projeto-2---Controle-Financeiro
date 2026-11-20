@@ -1,5 +1,5 @@
 import { pool } from '../config/db.js';
-import { calcularFatura, listarFaturas } from './calculoFatura.js';
+import { calcularFatura, faturaAnterior, listarFaturas } from './calculoFatura.js';
 import { hojeISO } from './datas.js';
 import { arredondar, deCentavos, paraCentavos, somarValores } from './dinheiro.js';
 
@@ -25,14 +25,18 @@ async function carregar(usuarioId) {
 export async function previsao(usuarioId, meses, hoje = hojeISO()) {
   const cartoes = await carregar(usuarioId);
   return cartoes.map(({ cartao, regra, itens }) => {
-    const faturas = listarFaturas(hoje, regra, meses + 1).map((f, i) => {
+    const abertas = listarFaturas(hoje, regra, meses + 1).map((f, i) => ({ ...f, atual: i === 0 }));
+    const anterior = faturaAnterior(hoje, regra);
+    // Fatura já fechada, mas ainda não vencida: continua listada até o pagamento.
+    const lista = anterior.vencimento >= hoje ? [{ ...anterior, atual: false, fechada: true }, ...abertas] : abertas;
+    const faturas = lista.map((f) => {
       const lancamentos = itens
         .filter((x) => x.fatura.referencia === f.referencia)
         .map((x) => ({
           id: x.id, descricao: x.descricao, valor: x.valor, data: x.data,
           parcelaAtual: x.parcela_atual, totalParcelas: x.total_parcelas, categoriaNome: x.categoria_nome,
         }));
-      return { ...f, atual: i === 0, total: somarValores(lancamentos.map((l) => l.valor)), lancamentos };
+      return { ...f, total: somarValores(lancamentos.map((l) => l.valor)), lancamentos };
     });
     // O limite fica comprometido pelo total das parcelas ainda não vencidas.
     const utilizado = somarValores(itens.filter((x) => x.fatura.vencimento >= hoje).map((x) => x.valor));

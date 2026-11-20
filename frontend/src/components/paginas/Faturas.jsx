@@ -7,7 +7,7 @@ function Fatura({ fatura }) {
   return (
     <div style={{ marginBottom: '1.25rem' }}>
       <h4 style={{ margin: '0 0 .4rem' }}>
-        {fatura.atual ? 'Fatura atual (aberta)' : 'Previsão'} — vence em {dataBR(fatura.vencimento)}
+        {fatura.atual ? 'Fatura atual (aberta)' : fatura.fechada ? 'Fatura fechada (aguardando pagamento)' : 'Previsão'} — vence em {dataBR(fatura.vencimento)}
         <small> (fecha em {dataBR(fatura.fechamento)})</small>
       </h4>
       {fatura.lancamentos.length === 0 ? <p className="estado">Sem lançamentos nesta fatura.</p> : (

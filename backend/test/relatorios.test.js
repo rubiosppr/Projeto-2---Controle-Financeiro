@@ -145,3 +145,29 @@ test('GET /relatorios/faturas: formato, validação de meses e isolamento', asyn
   const doB = await requisitar('GET', '/relatorios/faturas', { token: b.token });
   assert.deepEqual(doB.corpo, []);
 });
+
+test('previsão: fatura fechada e ainda não vencida é listada primeiro (fechada: true)', async () => {
+  const Fatura = await import('../src/models/fatura.js');
+  const u = await criarUsuario('FaturaFechada');
+  const catsU = (await requisitar('GET', '/categorias', { token: u.token })).corpo;
+  const visa = (await requisitar('POST', '/fontes-destinos', {
+    token: u.token, corpo: { nome: 'Visa', tipo: 'cartao_credito', diaFechamento: 25, diaVencimento: 5, limite: 3000 },
+  })).corpo;
+  const catId = catsU.find((c) => c.nome === 'Alimentação' && c.tipo === 'saida').id;
+  const l = (descricao, valor, data) => lancar(
+    { tipo: 'saida', descricao, valor, data, categoriaId: catId, fonteDestinoId: visa.id }, u.token);
+  await l('Antiga', 70, '2026-10-10');   // fatura de nov (vencida em 05/11)
+  await l('Fechada', 300, '2026-11-10'); // fecha 25/11, vence 05/12
+  await l('Aberta', 120, '2026-11-26');  // fecha 25/12, vence 05/01
+
+  const [prev] = await Fatura.previsao(u.id, 2, '2026-11-28');
+  assert.deepEqual(prev.faturas.map((f) => f.referencia), ['2026-12', '2027-01', '2027-02', '2027-03']);
+  assert.equal(prev.faturas[0].fechada, true);
+  assert.equal(prev.faturas[0].atual, false);
+  assert.equal(prev.faturas[0].vencimento, '2026-12-05');
+  assert.equal(prev.faturas[0].total, 300);
+  assert.equal(prev.faturas[1].atual, true);
+  assert.notEqual(prev.faturas[1].fechada, true);
+  assert.equal(prev.faturas[1].total, 120);
+  assert.equal(prev.limiteUtilizado, 420);
+});

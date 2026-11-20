@@ -213,3 +213,8 @@ test('isolamento: B não lê, edita nem exclui lançamento de A (404), e id inv�
   assert.equal(listaB.corpo.itens.length, 0);
   assert.equal((await requisitar('GET', '/lancamentos/abc', { token: a.token })).status, 404);
 });
+
+test('descrição com byte nulo é 400, não 500', async () => {
+  const r = await criar(novo({ descricao: 'a\u0000b' }));
+  assert.equal(r.status, 400);
+});

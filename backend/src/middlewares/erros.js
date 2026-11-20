@@ -25,6 +25,7 @@ export function tratarErros(erro, req, res, next) {
   if (erro.type === 'entity.parse.failed') {
     return res.status(400).json({ erro: 'JSON inválido.' });
   }
+  if (erro.code === '22021' || erro.code === '22P05') return res.status(400).json({ erro: 'Dados inválidos.' });
   if (erro.code === '23505') return res.status(409).json({ erro: 'Registro duplicado.' });
   if (erro.code === '23503') return res.status(409).json({ erro: 'Registro em uso por outros dados.' });
   if (erro.status && erro.status < 500) return res.status(erro.status).json({ erro: 'Requisição inválida.' });

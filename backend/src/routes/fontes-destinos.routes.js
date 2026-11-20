@@ -21,7 +21,12 @@ router.post('/', validarFonteDestino, async (req, res) => {
 
 router.put('/:id', validarFonteDestino, async (req, res) => {
   const id = Number(req.params.id);
-  if (!(await FonteDestino.buscar(req.usuarioId, id))) throw naoEncontrado('Fonte/destino não encontrada.');
+  const atual = await FonteDestino.buscar(req.usuarioId, id);
+  if (!atual) throw naoEncontrado('Fonte/destino não encontrada.');
+  if (req.dados.tipo !== atual.tipo && (await FonteDestino.contarLancamentos(req.usuarioId, id)) > 0) {
+    throw new ErroApi(409, 'Não é possível alterar o tipo de uma fonte/destino que possui lançamentos.',
+      { tipo: 'A fonte/destino possui lançamentos.' });
+  }
   try {
     res.json(await FonteDestino.atualizar(req.usuarioId, id, req.dados));
   } catch (erro) {

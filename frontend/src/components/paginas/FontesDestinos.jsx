@@ -32,7 +32,7 @@ export default function FontesDestinos() {
     e.preventDefault();
     const cartao = form.tipo === 'cartao_credito';
     const corpo = {
-      nome: form.nome, tipo: form.tipo, reserva: form.reserva,
+      nome: form.nome, tipo: form.tipo, reserva: form.tipo === 'conta' && form.reserva,
       ...(cartao && {
         diaFechamento: Number(form.diaFechamento) || null,
         diaVencimento: Number(form.diaVencimento) || null,

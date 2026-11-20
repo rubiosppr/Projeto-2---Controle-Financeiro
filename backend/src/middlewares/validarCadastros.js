@@ -22,7 +22,7 @@ export const validarFonteDestino = criarValidador((b, campos) => {
   if (!['renda', 'conta', 'cartao_credito'].includes(tipo)) {
     campos.tipo = 'Tipo inválido. Use renda, conta ou cartao_credito.';
   }
-  const dados = { nome, tipo, diaFechamento: null, diaVencimento: null, limite: null, reserva: b.reserva === true };
+  const dados = { nome, tipo, diaFechamento: null, diaVencimento: null, limite: null, reserva: tipo === 'conta' && b.reserva === true };
   if (tipo === 'cartao_credito') {
     dados.diaFechamento = dia(b.diaFechamento);
     dados.diaVencimento = dia(b.diaVencimento);

@@ -33,6 +33,12 @@ export function calcularFatura(dataCompra, cartao, numeroParcela = 1) {
   return montarFatura(ano, mes, cartao);
 }
 
+// Fatura imediatamente anterior à aberta na data informada (fechada, possivelmente ainda não paga)
+export function faturaAnterior(dataBase, cartao) {
+  const { ano, mes } = mesDeFechamento(dataBase, cartao, 1);
+  return montarFatura(ano, mes - 1, cartao);
+}
+
 // Faturas consecutivas a partir da fatura aberta na data informada
 export function listarFaturas(dataBase, cartao, quantidade) {
   const { ano, mes } = mesDeFechamento(dataBase, cartao, 1);

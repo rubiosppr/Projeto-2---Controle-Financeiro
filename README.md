@@ -3,12 +3,12 @@
 Aplicação de controle financeiro pessoal: API REST em Node.js/Express com PostgreSQL e SPA em React.
 
 ## Tecnologias
-- **Back-end:** Node.js 24, Express 5, `pg` (pool de conexões), `bcrypt`, `jsonwebtoken`, `dotenv`, `cors`, `express-rate-limit`. Testes com `node:test`.
+- **Back-end:** Node.js 24 (mínimo 22), Express 5, `pg` (pool de conexões), `bcrypt`, `jsonwebtoken`, `dotenv`, `cors`, `express-rate-limit`. Testes com `node:test`.
 - **Front-end:** React, React Router, Vite, Recharts. HTTP com `fetch`; CSS puro.
 - **Banco:** PostgreSQL 16 (via Docker).
 
 ## Como rodar do zero
-Pré-requisitos: Node 20+ e Docker.
+Pré-requisitos: Node 24 (mínimo 22) e Docker.
 
 ```bash
 # 1. Banco de dados (sobe o Postgres; cria também o banco de testes financas_test)

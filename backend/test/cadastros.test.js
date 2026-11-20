@@ -128,3 +128,23 @@ test('Review Focus 2: id não numérico ou gigante é 404, não 500', async () =
     assert.equal((await requisitar('PUT', `/fontes-destinos/${id}`, { token: a.token, corpo: { nome: 'x', tipo: 'conta' } })).status, 404, id);
   }
 });
+
+test('fontes: não altera o tipo com lançamentos (409); sem lançamentos é 200', async () => {
+  const fontes = await ids(a.token, '/fontes-destinos');
+  const comLanc = fontes.find((f) => f.nome === 'Conta corrente');
+  const r = await requisitar('PUT', `/fontes-destinos/${comLanc.id}`, { token: a.token, corpo: { nome: comLanc.nome, tipo: 'renda' } });
+  assert.equal(r.status, 409);
+  assert.ok(r.corpo.campos.tipo);
+  const nova = (await requisitar('POST', '/fontes-destinos', { token: a.token, corpo: { nome: 'TrocaTipo', tipo: 'renda' } })).corpo;
+  const ok = await requisitar('PUT', `/fontes-destinos/${nova.id}`, { token: a.token, corpo: { nome: 'TrocaTipo', tipo: 'conta' } });
+  assert.equal(ok.status, 200);
+  assert.equal(ok.corpo.tipo, 'conta');
+});
+
+test('fontes: reserva só vale para conta', async () => {
+  const r = await requisitar('POST', '/fontes-destinos', {
+    token: a.token, corpo: { nome: 'CartaoReserva', tipo: 'cartao_credito', diaFechamento: 1, diaVencimento: 8, limite: 100, reserva: true },
+  });
+  assert.equal(r.status, 201);
+  assert.equal(r.corpo.reserva, false);
+});

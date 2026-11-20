@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
     if (!lerToken()) return;
     api.get('/auth/me')
       .then(setUsuario)
-      .catch(() => logout())
+      .catch((erro) => { if (erro?.status === 401) logout(); })
       .finally(() => setCarregando(false));
   }, [logout]);
 
