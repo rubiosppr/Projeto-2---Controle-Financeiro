@@ -4,6 +4,9 @@ import { fileURLToPath } from 'node:url';
 import { env } from './config/env.js';
 import { rotaNaoEncontrada, tratarErros } from './middlewares/erros.js';
 import authRoutes from './routes/auth.routes.js';
+import { autenticar } from './middlewares/autenticar.js';
+import categoriasRoutes from './routes/categorias.routes.js';
+import fontesDestinosRoutes from './routes/fontes-destinos.routes.js';
 
 export const app = express();
 
@@ -11,6 +14,8 @@ app.use(cors({ origin: env.corsOrigin }));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/categorias', autenticar, categoriasRoutes);
+app.use('/api/fontes-destinos', autenticar, fontesDestinosRoutes);
 
 app.use(rotaNaoEncontrada);
 app.use(tratarErros);
