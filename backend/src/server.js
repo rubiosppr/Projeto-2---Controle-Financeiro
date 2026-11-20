@@ -8,6 +8,7 @@ import { autenticar } from './middlewares/autenticar.js';
 import categoriasRoutes from './routes/categorias.routes.js';
 import fontesDestinosRoutes from './routes/fontes-destinos.routes.js';
 import lancamentosRoutes from './routes/lancamentos.routes.js';
+import relatoriosRoutes from './routes/relatorios.routes.js';
 
 export const app = express();
 
@@ -18,6 +19,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/categorias', autenticar, categoriasRoutes);
 app.use('/api/fontes-destinos', autenticar, fontesDestinosRoutes);
 app.use('/api/lancamentos', autenticar, lancamentosRoutes);
+app.use('/api/relatorios', autenticar, relatoriosRoutes);
 
 app.use(rotaNaoEncontrada);
 app.use(tratarErros);
