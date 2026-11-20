@@ -115,7 +115,8 @@ export async function calcular(usuarioId, hoje = hojeISO()) {
   }
 
   // Projeção de 6 meses: média das entradas − saídas fora do cartão − faturas já conhecidas
-  const saldoAtual = arredondar((await saldoAcumulado(usuarioId, hoje)) - cartoes.vencido);
+  // Saldo inicial já desconta as faturas vencidas e as que vencem no mês corrente; a projeção cobre atual+1 em diante.
+  const saldoAtual = arredondar((await saldoAcumulado(usuarioId, hoje)) - cartoes.vencido - (cartoes.aVencer[atual] ?? 0));
   let saldo = saldoAtual;
   const projecao = [1, 2, 3, 4, 5, 6].map((n) => {
     const mes = somarMeses(atual, n);

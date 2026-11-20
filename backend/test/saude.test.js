@@ -2,6 +2,7 @@ import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { iniciar, encerrar, requisitar, criarUsuario } from './helpers.js';
 import { hojeISO, somarMeses } from '../src/models/datas.js';
+import { calcularFatura } from '../src/models/calculoFatura.js';
 
 let a;
 let vazio;
@@ -72,4 +73,30 @@ test('categoria fora da curva é detectada', async () => {
   assert.equal(lazer.media, 100);
   assert.equal(lazer.atual, 300);
   assert.equal(lazer.percentualAcima, 200);
+});
+
+test('saldoAtual desconta faturas vencidas e as que vencem no mês corrente; projeção traz as do mês seguinte', async () => {
+  const u = await criarUsuario('Cartao');
+  const cs = (await requisitar('GET', '/categorias', { token: u.token })).corpo;
+  const contaU = (await requisitar('GET', '/fontes-destinos', { token: u.token })).corpo[0];
+  const regra = { diaFechamento: 3, diaVencimento: 28 };
+  const cartao = (await requisitar('POST', '/fontes-destinos', {
+    token: u.token, corpo: { nome: 'Cartão', tipo: 'cartao_credito', ...regra, limite: 5000 },
+  })).corpo;
+  const post = (tipo, valor, data, fonte) => requisitar('POST', '/lancamentos', {
+    token: u.token,
+    corpo: { tipo, descricao: 'x', valor, data, categoriaId: cs.find((c) => c.tipo === tipo).id, fonteDestinoId: fonte.id },
+  });
+  assert.equal((await post('entrada', 1000, `${mes(-1)}-05`, contaU)).status, 201);
+  const compras = [{ valor: 100, data: `${mes(-1)}-10` }, { valor: 50, data: hoje }];
+  for (const c of compras) assert.equal((await post('saida', c.valor, c.data, cartao)).status, 201);
+
+  const faturas = compras.map((c) => ({ valor: c.valor, ...calcularFatura(c.data, regra, 1) }));
+  const abatido = faturas.filter((f) => f.vencimento < hoje || f.referencia === mes(0)).reduce((t, f) => t + f.valor, 0);
+  const proximoMes = faturas.filter((f) => f.referencia === mes(1)).reduce((t, f) => t + f.valor, 0);
+
+  const r = await requisitar('GET', '/saude-financeira', { token: u.token });
+  assert.equal(r.status, 200);
+  assert.equal(r.corpo.saldoAtual, 1000 - abatido);
+  assert.equal(r.corpo.projecao[0].saidas, proximoMes);
 });
