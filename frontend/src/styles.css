@@ -1,0 +1,49 @@
+:root { --azul: #1d4ed8; --verde: #15803d; --vermelho: #b91c1c; --borda: #d4d4d8; --fundo: #f4f4f5; font-family: system-ui, sans-serif; color: #18181b; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fundo); }
+h1, h2, h3 { margin: 0 0 .75rem; }
+button { background: var(--azul); color: #fff; border: 0; border-radius: 6px; padding: .5rem .9rem; cursor: pointer; font: inherit; }
+button:disabled { opacity: .6; cursor: default; }
+button.secundario { background: #fff; color: #18181b; border: 1px solid var(--borda); }
+button.perigo { background: var(--vermelho); }
+button.link { background: none; color: var(--azul); padding: .2rem .4rem; }
+input, select { width: 100%; padding: .5rem; border: 1px solid var(--borda); border-radius: 6px; font: inherit; background: #fff; }
+.campo { margin-bottom: .9rem; display: flex; flex-direction: column; gap: .25rem; }
+.erro-campo { color: var(--vermelho); font-size: .85rem; }
+.erro-bloco { color: var(--vermelho); background: #fee2e2; padding: .6rem .8rem; border-radius: 6px; }
+.estado { text-align: center; color: #52525b; padding: 1.5rem; }
+.auth { min-height: 100vh; display: grid; place-items: center; padding: 1rem; }
+.cartao { background: #fff; padding: 1.5rem; border-radius: 10px; width: min(420px, 100%); box-shadow: 0 1px 4px #0002; }
+.app { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+.menu { background: #18181b; color: #fff; padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+.menu h1 { font-size: 1.1rem; }
+.menu nav { display: flex; flex-direction: column; gap: .25rem; }
+.menu nav a { color: #d4d4d8; text-decoration: none; padding: .45rem .6rem; border-radius: 6px; }
+.menu nav a.active { background: #3f3f46; color: #fff; }
+.menu-rodape { margin-top: auto; display: flex; flex-direction: column; gap: .5rem; font-size: .9rem; }
+.conteudo { padding: 1.5rem; min-width: 0; }
+.barra { display: flex; flex-wrap: wrap; gap: .75rem; align-items: flex-end; margin-bottom: 1rem; }
+.barra .campo { margin: 0; min-width: 140px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .75rem; margin-bottom: 1rem; }
+.card { background: #fff; border-radius: 8px; padding: .9rem; box-shadow: 0 1px 3px #0002; }
+.card small { color: #52525b; display: block; }
+.card strong { font-size: 1.25rem; }
+table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; }
+th, td { text-align: left; padding: .55rem .7rem; border-bottom: 1px solid var(--borda); }
+th { background: #e4e4e7; font-size: .85rem; }
+td.num, th.num { text-align: right; }
+.entrada { color: var(--verde); }
+.saida { color: var(--vermelho); }
+.acoes { display: flex; gap: .4rem; }
+.modal-fundo { position: fixed; inset: 0; background: #0006; display: grid; place-items: center; padding: 1rem; z-index: 10; }
+.modal { background: #fff; border-radius: 10px; padding: 1.25rem; width: min(480px, 100%); max-height: 90vh; overflow: auto; }
+.modal-topo { display: flex; justify-content: space-between; align-items: center; }
+.abas { display: flex; gap: .5rem; margin-bottom: 1rem; }
+.abas button { background: #fff; color: #18181b; border: 1px solid var(--borda); }
+.abas button.ativa { background: var(--azul); color: #fff; }
+.grafico { height: 300px; background: #fff; border-radius: 8px; padding: .5rem; margin: 1rem 0; }
+.aviso { background: #fef9c3; border-left: 4px solid #ca8a04; padding: .7rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
+.dica { background: #fff; border-left: 4px solid var(--azul); padding: .6rem .9rem; margin-bottom: .5rem; border-radius: 6px; }
+.dica.alerta { border-color: var(--vermelho); }
+.dica.ok { border-color: var(--verde); }
+@media (max-width: 760px) { .app { grid-template-columns: 1fr; } .menu nav { flex-direction: row; flex-wrap: wrap; } }
