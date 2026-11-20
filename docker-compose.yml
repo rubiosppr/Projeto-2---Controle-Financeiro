@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: financas-db
+    environment:
+      POSTGRES_USER: financas
+      POSTGRES_PASSWORD: financas
+      POSTGRES_DB: financas
+    ports:
+      - "5432:5432"
+    volumes:
+      - financas-dados:/var/lib/postgresql/data
+      - ./backend/database/init-teste.sql:/docker-entrypoint-initdb.d/init-teste.sql:ro
+volumes:
+  financas-dados:
