@@ -9,6 +9,7 @@ import FontesDestinos from './components/paginas/FontesDestinos.jsx';
 import Lancamentos from './components/paginas/Lancamentos.jsx';
 import Relatorios from './components/paginas/Relatorios.jsx';
 import Faturas from './components/paginas/Faturas.jsx';
+import SaudeFinanceira from './components/paginas/SaudeFinanceira.jsx';
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
             <Route path="/lancamentos" element={<Lancamentos />} />
             <Route path="/relatorios" element={<Relatorios />} />
             <Route path="/faturas" element={<Faturas />} />
+<Route path="/saude-financeira" element={<SaudeFinanceira />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
