@@ -13,6 +13,7 @@ Aplicação de controle financeiro pessoal: API REST em Node.js/Express com Post
 
 ## Como rodar do zero
 Pré-requisitos: Node 24 (mínimo 22) e Docker.
+Certifique-se de que o Docker Desktop esteja rodando antes de rodar os comandos.
 
 ```bash
 # 1. Banco de dados (sobe o Postgres; cria também o banco de testes financas_test)
