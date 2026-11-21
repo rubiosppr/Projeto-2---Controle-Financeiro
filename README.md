@@ -2,6 +2,10 @@
 
 Aplicação de controle financeiro pessoal: API REST em Node.js/Express com PostgreSQL e SPA em React.
 
+## Integrantes do Grupo
+
+- Mateus Rubio Durão - 2266482
+
 ## Tecnologias
 - **Back-end:** Node.js 24 (mínimo 22), Express 5, `pg` (pool de conexões), `bcrypt`, `jsonwebtoken`, `dotenv`, `cors`, `express-rate-limit`. Testes com `node:test`.
 - **Front-end:** React, React Router, Vite, Recharts. HTTP com `fetch`; CSS puro.
